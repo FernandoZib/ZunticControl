@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 16-10-2021 a las 18:02:12
+-- Tiempo de generación: 09-11-2021 a las 15:58:03
 -- Versión del servidor: 10.4.11-MariaDB
 -- Versión de PHP: 7.4.4
 
@@ -143,6 +143,31 @@ CREATE TABLE `ocupacion` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `perfil`
+--
+
+CREATE TABLE `perfil` (
+  `id` int(11) NOT NULL,
+  `nombre` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `apellidos` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `telefono` varchar(15) COLLATE utf8_unicode_ci NOT NULL,
+  `correo` varchar(80) COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `rol`
+--
+
+CREATE TABLE `rol` (
+  `id` int(11) NOT NULL,
+  `nombre` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `tipo_habitacion`
 --
 
@@ -170,15 +195,17 @@ CREATE TABLE `user` (
   `status` smallint(6) NOT NULL DEFAULT 10,
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
-  `verification_token` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL
+  `verification_token` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `id_rol` int(11) NOT NULL,
+  `id_perfil` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `user`
 --
 
-INSERT INTO `user` (`id`, `username`, `auth_key`, `password_hash`, `password_reset_token`, `email`, `status`, `created_at`, `updated_at`, `verification_token`) VALUES
-(1, 'cecilio', 'aOPjxqVxGnXsQB6NKYcfvBWHzMt5zKHJ', '$2y$13$PLqdh4ycy7lhL1UPjQXqQehhvzBpl79bxvuSzDv.9IabhYccnG.Ky', NULL, 'cecilio@gmail.com', 10, 1634072493, 1634072493, 'Ras2PQITCcq9i8bAVbBDTS3h8CNBNPgk_1634072493');
+INSERT INTO `user` (`id`, `username`, `auth_key`, `password_hash`, `password_reset_token`, `email`, `status`, `created_at`, `updated_at`, `verification_token`, `id_rol`, `id_perfil`) VALUES
+(1, 'cecilio', 'aOPjxqVxGnXsQB6NKYcfvBWHzMt5zKHJ', '$2y$13$PLqdh4ycy7lhL1UPjQXqQehhvzBpl79bxvuSzDv.9IabhYccnG.Ky', NULL, 'cecilio@gmail.com', 10, 1634072493, 1634072493, 'Ras2PQITCcq9i8bAVbBDTS3h8CNBNPgk_1634072493', 0, 0);
 
 --
 -- Índices para tablas volcadas
@@ -240,6 +267,18 @@ ALTER TABLE `ocupacion`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indices de la tabla `perfil`
+--
+ALTER TABLE `perfil`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `rol`
+--
+ALTER TABLE `rol`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indices de la tabla `tipo_habitacion`
 --
 ALTER TABLE `tipo_habitacion`
@@ -252,7 +291,9 @@ ALTER TABLE `user`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `username` (`username`),
   ADD UNIQUE KEY `email` (`email`),
-  ADD UNIQUE KEY `password_reset_token` (`password_reset_token`);
+  ADD UNIQUE KEY `password_reset_token` (`password_reset_token`),
+  ADD KEY `id_rol` (`id_rol`),
+  ADD KEY `id_perfil` (`id_perfil`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -338,6 +379,18 @@ ALTER TABLE `huesped`
   ADD CONSTRAINT `huesped_ibfk_2` FOREIGN KEY (`id_cuenta`) REFERENCES `cuenta` (`id`),
   ADD CONSTRAINT `huesped_ibfk_3` FOREIGN KEY (`id_estancia`) REFERENCES `estancia` (`id`),
   ADD CONSTRAINT `huesped_ibfk_4` FOREIGN KEY (`id_habitacion`) REFERENCES `habitacion` (`id`);
+
+--
+-- Filtros para la tabla `perfil`
+--
+ALTER TABLE `perfil`
+  ADD CONSTRAINT `perfil_ibfk_1` FOREIGN KEY (`id`) REFERENCES `user` (`id_perfil`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Filtros para la tabla `rol`
+--
+ALTER TABLE `rol`
+  ADD CONSTRAINT `rol_ibfk_1` FOREIGN KEY (`id`) REFERENCES `user` (`id_rol`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
